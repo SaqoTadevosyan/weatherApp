@@ -8,6 +8,7 @@ import {CACHE_TIME} from '../constants';
 import {getCurrentWeather, getFutureWeather} from '../services/api/search';
 import {CityGeoData} from '../types';
 import MainWrapper from '../wrappers/MainWrapper';
+import {saveSearchQuery} from '../helpers';
 
 const BlockTitle = styled.Text`
   color: #22215b;
@@ -15,7 +16,11 @@ const BlockTitle = styled.Text`
   margin-top: 20px;
 `;
 
-export default function Home() {
+interface Props {
+  route: {params: {searchTermFromStore: string}};
+}
+
+export default function Home({route}: Props) {
   const [selectedCityGeoData, setSelectedCityGeoData] = useState<CityGeoData>({
     lat: '',
     lon: '',
@@ -38,6 +43,7 @@ export default function Home() {
       refetchOnWindowFocus: false,
       enabled: false,
       cacheTime: CACHE_TIME,
+      onSuccess: res => saveSearchQuery(res.name),
     },
   );
 
@@ -50,7 +56,10 @@ export default function Home() {
   return (
     <MainWrapper>
       <>
-        <SearchBar setSelectedCityGeoData={setSelectedCityGeoData} />
+        <SearchBar
+          setSelectedCityGeoData={setSelectedCityGeoData}
+          searchTermFromStore={route?.params?.searchTermFromStore}
+        />
         {currentWeather && (
           <>
             <BlockTitle>Current Weather in {currentWeather.name}</BlockTitle>

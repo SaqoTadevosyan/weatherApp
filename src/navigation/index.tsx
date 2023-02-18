@@ -2,7 +2,7 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home';
 import History from '../screens/History';
-import {HistoryIcon, HomeIcon} from '../icons/Home';
+import {HistoryIcon, HomeIcon} from '../icons/HomeIcons';
 const MainStack = createBottomTabNavigator();
 export const Navigation = () => (
   <MainStack.Navigator

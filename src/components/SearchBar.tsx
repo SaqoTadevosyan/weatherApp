@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Keyboard, Text, TextInput, TouchableOpacity} from 'react-native';
 import styled from 'styled-components/native';
-import {SearchIcon} from '../icons/Home';
+import {SearchIcon} from '../icons/HomeIcons';
 import {debounce} from 'lodash';
 import {searchCityByName} from '../services/api/search';
 import {useQuery} from 'react-query';
@@ -34,31 +34,43 @@ const SuggestedCityName = styled.Text`
 
 interface Props {
   setSelectedCityGeoData: (city: CityGeoData) => void;
+  searchTermFromStore?: string;
 }
 
-export default function SearchBar({setSelectedCityGeoData}: Props) {
-  const [searchTerm, setSearchTerm] = useState('');
+export default function SearchBar({
+  setSelectedCityGeoData,
+  searchTermFromStore,
+}: Props) {
+  const [searchText, setSearchText] = useState('');
   const [showSuggestionMenu, setShowSuggestionMenu] = useState<boolean>(false);
-
   const {data: cities, refetch} = useQuery(
     'suggestedCities',
-    () => (searchTerm ? searchCityByName({city: searchTerm}) : () => {}),
+    () => (searchText ? searchCityByName({city: searchText}) : () => {}),
     {
       refetchOnWindowFocus: false,
       enabled: false,
+      onSuccess: res => {
+        !showSuggestionMenu && searchTermFromStore === searchText
+          ? setSelectedCityGeoData({lat: res[0].lat, lon: res[0].lon})
+          : undefined;
+      },
     },
   );
   const searchCityDebounced = useCallback(debounce(refetch, 500), []);
 
   useEffect(() => {
-    if (searchTerm) {
+    if (searchText) {
       searchCityDebounced();
     }
-  }, [searchTerm]);
+  }, [searchText]);
+
+  useEffect(() => {
+    setSearchText(searchTermFromStore);
+  }, [searchTermFromStore]);
 
   const handleSelectSuggestion = (name: string, geoData: CityGeoData) => {
     setSelectedCityGeoData({lat: geoData.lat, lon: geoData.lon});
-    setSearchTerm(name);
+    setSearchText(name);
     Keyboard.dismiss();
   };
 
@@ -76,8 +88,8 @@ export default function SearchBar({setSelectedCityGeoData}: Props) {
         <SearchInputContainer>
           <TextInput
             placeholder="Enter full city name"
-            value={searchTerm}
-            onChangeText={setSearchTerm}
+            value={searchText}
+            onChangeText={setSearchText}
             onFocus={() => setShowSuggestionMenu(true)}
             onBlur={() => setShowSuggestionMenu(false)}
           />
