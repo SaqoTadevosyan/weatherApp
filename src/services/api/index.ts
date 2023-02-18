@@ -1,9 +1,9 @@
+import {API_URL} from './../../configs/index';
 import axios from 'axios';
 import {Alert} from 'react-native';
-import {API_KEY} from '../../configs';
 
 const api = axios.create({
-  baseURL: `http://openweathermap.org/api?appid=${API_KEY}`,
+  baseURL: `${API_URL}`,
 });
 
 api.interceptors.response.use(
