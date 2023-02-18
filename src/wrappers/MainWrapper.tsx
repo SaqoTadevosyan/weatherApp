@@ -6,6 +6,7 @@ const Container = styled.View`
   background-color: #e5e5e5;
   padding-left: 30px;
   padding-right: 30px;
+  padding-top: 30px;
 `;
 
 export default function MainWrapper({
