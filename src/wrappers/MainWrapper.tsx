@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 
-const Container = styled.View`
+const Container = styled.SafeAreaView`
   flex: 1;
   background-color: #e5e5e5;
   padding-left: 30px;

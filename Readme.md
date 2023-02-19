@@ -8,3 +8,5 @@
 - Run the app
   - yarn ios
   - npm run ios
+  - yarn android
+  - npm run android
